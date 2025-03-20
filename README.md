@@ -150,7 +150,7 @@ void loop() {
 }
 ```
 
-#### Slave
+#### Slave:
 ```C++
 #include <painlessMesh.h>
 
