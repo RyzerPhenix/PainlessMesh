@@ -50,9 +50,9 @@ To use the Seeed Studio XIAO ESP32 Series microcontrollers, it is nececary to in
 1. Open the Arduino IDE
 2. Navigate to File > Preferences
 3. Fill "Additional Boards Manager URLs" with this URL:
-'''
+```
 https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-'''
+```
 4. Navigate to Tools > Board > Boards Manager
 5. Type the keyword esp32 in the search box, select the latest version of esp32, and install it.
 6. Select your board (XIAO_ESP32-S3) and the port.
@@ -69,7 +69,7 @@ Install the painlessMesh Library
 ### Code
 
 #### Master:
-'''C++
+```C++
 #include <painlessMesh.h>
 
 // Netzwerk-Parameter
@@ -148,10 +148,10 @@ void loop() {
     slaveIndex = (slaveIndex + 1) % 256;
   }
 }
-'''
+```
 
 ####Slave
-'''C++
+```C++
 #include <painlessMesh.h>
 
 // Netzwerk-Parameter
@@ -216,4 +216,4 @@ void setup() {
 void loop() {
   mesh.update();
 }
-'''
+```
