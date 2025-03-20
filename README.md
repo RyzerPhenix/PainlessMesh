@@ -13,19 +13,11 @@ The project serves to decentralize the unit count recording and realize it wirel
 - [Working principle](#Overview)
   - [Mesh Network](#Mesh-Netwrok)
   - [painlessMesh Library](#painlessMesh-Library)
-  - [Network Structure](#Network-Structure)
-  - [Data Collection](#Data-Collection)
 - [Hardware](#Hardware)
   - [Microcontroller](#Microcontroller)
-  - [Device ID and Room Selection](#Device-ID-and-Room-Selection)
-  - [Custom PCB](#Custom-PCB)
 - [Software](#Software)
   - [Libraries and Dependencies](#Libraries-and-Dependencies)
   - [Code](#Code)
-- [Network analytic Device](#Network-analytic-Device)
-  - [Hardware](#Hardware)
-  - [Software](#Software)
-  - [Functionality](#Functionality)
 
 ## Working Principle
 ### Mesh Network
