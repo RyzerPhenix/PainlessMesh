@@ -30,7 +30,7 @@ Source: https://www.fastcabling.com
 ## Hardware
 ### Microcontroller
 The microcontroller used is the Seeed Studio XIAO ESP32S3. This Microcontroller was chosen, because of its small formfactor, its two powerfull 32-bit Xtensa LX7 Cores running at up to 240MHz and its PSRAM. In comparison to other XIAO Boards, the ESP32S3 has a relatively big PSRAM with 8MB, this is important for mesh applications, since the size of the network is mostly limited by RAM capacity. Also it has 8MB of Flash storage onboard. The XIAO ESP32S3 has a USB type C port for programming and interfacing with the MCU, this is important for future proofness and compatability. For interfaces it has 1x UART, 1x I²C, 1x I²S, 1xSPI, 11x GPIO (all capable of PWM), 1 user programmable LED and 1 charge LED. It has an integrated LiPo battery charger circuit onboard, so a single cell LiPo can be hooked for simply battery powering the application. The battery charging current is 100mA. It consumes about 100mA when powered with 5V while operating with WiFi.
-![Seeed Studio XIAO ESP32-S3](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/)
+[Seeed Studio XIAO ESP32-S3](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/)
 
 ## Software
 
@@ -47,7 +47,7 @@ https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32
 5. Type the keyword esp32 in the search box, select the latest version of esp32, and install it.
 6. Select your board (XIAO_ESP32-S3) and the port.
 
-Read more about it ![here](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/#software-preparation).
+Read more about it [here](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/#software-preparation).
 
 #### PainlessMesh Library
 The [painlessMesh library](https://github.com/gmag11/painlessMesh) for Arduino IDE is a powerful option for creating a self-healing, true ad-hoc, multi-node mesh networks with ESP8266 and ESP32 devices. The goal is to allow the programmer to work with a mesh network without having to worry about how the network is structured or managed. painlessMesh does not create a TCP/IP network of nodes. Rather each of the nodes is uniquely identified by its 32bit chipId which is retrieved from the esp8266/esp32 using the system_get_chip_id() call in the SDK. Any system of 1 or more nodes will self-organize into fully functional mesh. The maximum size of the mesh is limited by the amount of memory in the heap that can be allocated to the sub-connections buffer. In the library, it is possible to specify a port and a channel for the WiFi connection, so you can create multiple seperate networks running near each other but they won't interfear.
