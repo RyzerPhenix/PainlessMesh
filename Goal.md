@@ -20,6 +20,6 @@ Mit Mikrofon Audiosignal an Lautsprecher (Simon) schicken
 # Gemeinsam
 
 # Material
-- 9x Seeed Studio XIAO ESP32-S3
-- 2x 40 Jumper Kabel
+- 9x Seeed Studio XIAO ESP32-S3 (https://www.mouser.ch/ProductDetail/713-113991114)
+- 2x 40 Jumper Kabel (https://www.mouser.ch/ProductDetail/485-4447)
 - Sensoren aus Herrn Meyers Kit
