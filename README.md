@@ -2,7 +2,7 @@
 **Author**: Stephan Bischof | Electronics Engineer  
 **Responsible**: Ryzer Phenix | CEO, CTO, ICT Manager and Co-Founder
 **Date**: 04.11.2024  
-Commited for commercial | Ryzer Industries.
+Commited for commercial use | Ryzer Industries
 
 ## Project Description
 The project serves to teach about mesh networks and to use them with simple sensors. The Seeed Studio ESP32S3 microcontroller unit is used for this purpose. Communication between the different nodes works via a 2.4GHz mesh network, for which the PainlessMesh library is used.
