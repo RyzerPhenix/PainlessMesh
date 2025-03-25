@@ -10,7 +10,7 @@ Mit Mikrofon Audiosignal an Lautsprecher (Simon) schicken
 # Julian
 - Daten von MQ-2 Gas Sensor auslesen und an alle senden.
 # Timo
-
+- Sensoren integrieren und an einen oder mehrere Nodes senden.
 # Oli
 - Rotation eines "Rotary-Encoders" der einen Node, auf einer anderen Node mit einem Schrittmotor nachbilden.
 
