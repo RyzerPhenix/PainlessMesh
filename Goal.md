@@ -21,5 +21,5 @@ Mit Mikrofon Audiosignal an Lautsprecher (Simon) schicken
 
 # Material
 - 9x Seeed Studio XIAO ESP32-S3
-- Genug Jumper Kabel
+- 2x 40 Jumper Kabel
 - Sensoren aus Herrn Meyers Kit
