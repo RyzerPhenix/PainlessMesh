@@ -1,13 +1,12 @@
-# GON131 Stückzahlerfassung dezentral drahtlos
+# Mesh Network using ESP32 and PainlessMesh
 **Author**: Stephan Bischof | Electronics Engineer  
 **Responsible**:
-- Jürg Schnidrig | Electronics Engineer
-- Marc Strub | IT-, OT- and IS-Manager
+- Ryzer Phenix | CEO, CTO, ICT Manager and Co-Founder
 **Date**: 04.11.2024  
-For internal use only | Renata SA - Swatch Group Ltd.
+Commited for commercial | Ryzer Industries.
 
 ## Project Description
-The project serves to decentralize the unit count recording and realize it wirelessly. Seeed Studio ESP32S3 microcontroller units on a custom PCB are used for this purpose. Communication between the different nodes works via a 2.4GHz mesh network, for which the painlessMesh library is used.
+The project serves to teach about mesh networks and to use them with simple sensors. The Seeed Studio ESP32S3 microcontroller unit is used for this purpose. Communication between the different nodes works via a 2.4GHz mesh network, for which the PainlessMesh library is used.
 
 ## Overview
 - [Working principle](#Overview)
