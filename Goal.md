@@ -1,7 +1,7 @@
 # Sven
-Mit Mikrofon Audiosignal an den netten Simon schicke
+- Mit Mikrofon Audiosignal an den netten Simon schicke
 # Simon
-Receiver für Telefon (Piezo als Lautsprecher und Mikrofon)
+- Receiver für Telefon (Piezo als Lautsprecher und Mikrofon)
 # Jillian
 - Piezo-Speaker anschliessen, damit andere Geräte im Netzwerk diesen ansteuern können.
 # Stephan
