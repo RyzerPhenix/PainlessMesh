@@ -1,7 +1,7 @@
 # Sven
 
 # Simon
-
+Receiver für Telefon (Piezo als Lautsprecher und Mikrofon)
 # Jillian
 - Piezo-Speaker anschliessen, damit andere Geräte im Netzwerk diesen ansteuern können.
 # Stephan
