@@ -1,5 +1,5 @@
 # Sven
-- Mit Mikrofon Audiosignal an den netten Simon schicke
+Mit Mikrofon Audiosignal an Lautsprecher (Simon) schicken
 # Simon
 - Receiver für Telefon (Piezo als Lautsprecher und Mikrofon)
 # Jillian
