@@ -3,7 +3,7 @@
 # Simon
 
 # Jillian
-
+- Piezo-Speaker anschliessen, damit andere Geräte im Netzwerk diesen ansteuern können.
 # Stephan
 - 3 Sensoren in das Netzwerk einbinden und die Daten an alle Nodes senden. Diese sortieren die Daten und geben diese an die Konsole aus.
 
