@@ -1,8 +1,6 @@
 # Mesh Network using ESP32 and PainlessMesh
 **Author**: Stephan Bischof | Electronics Engineer  
-**Responsible**:
-- Ryzer Phenix | CEO, CTO, ICT Manager and Co-Founder
-
+**Responsible**: Ryzer Phenix | CEO, CTO, ICT Manager and Co-Founder
 **Date**: 04.11.2024  
 Commited for commercial | Ryzer Industries.
 
