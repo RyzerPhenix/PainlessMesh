@@ -12,5 +12,6 @@
 # Timo
 
 # Oli
+Rotation eines "Rotary-Encoders" der einen Node, auf einer anderen Node mit einem Schrittmotor nachbilden.
 
 # Nico
