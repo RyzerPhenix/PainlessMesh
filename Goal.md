@@ -1,5 +1,5 @@
 # Sven
-
+Mit Mikrofon Audiosignal an den netten Simon schicke
 # Simon
 Receiver für Telefon (Piezo als Lautsprecher und Mikrofon)
 # Jillian
