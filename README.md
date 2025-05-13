@@ -59,201 +59,59 @@ Install the painlessMesh Library
 ### Code
 
 #### RSSI Example Code
-```C++
-#include "painlessMesh.h"
-#include <WiFi.h>
-
-#define MESH_PREFIX     "MyMeshNetwork"
-#define MESH_PASSWORD   "password123"
-#define MESH_PORT       5555
-
-Scheduler userScheduler;
-painlessMesh mesh;
-
-unsigned long lastSentTime = 0;
-const unsigned long interval = 10000; // 10 Sekunden
-
-void sendRSSI() {
-    SimpleList<uint32_t> nodes = mesh.getNodeList();
-    for (auto node : nodes) {
-        String msg = "REQ_RSSI"; // Anforderung zur Messung der Signalstärke
-        mesh.sendSingle(node, msg);
-    }
-}
-
-void receivedCallback(uint32_t from, String &msg) {
-    Serial.printf("Received from %u: %s\n", from, msg.c_str());
-    
-    if (msg == "REQ_RSSI") {
-        int8_t rssi = WiFi.RSSI(); // Signalstärke des aktuellen Netzwerks messen
-        String response = "RSSI: " + String(rssi) + " dB";
-        mesh.sendSingle(from, response);
-    }
-}
-
-void setup() {
-    Serial.begin(115200);
-    WiFi.mode(WIFI_STA); // WLAN in den Station-Modus versetzen
-    
-    mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
-    mesh.onReceive(&receivedCallback);
-}
-
-void loop() {
-    mesh.update();
-    
-    if (millis() - lastSentTime >= interval) {
-        lastSentTime = millis();
-        sendRSSI();
-    }
-}
-```
-
-#### Master:
+This code analyzes the signal strength of the node to it's parent. It reports it, alongside with some other debug information, to the serial port.
 ```C++
 #include <painlessMesh.h>
 
-// Netzwerk-Parameter
-#define MESH_PASSWORD   "12345678"
-#define MESH_PORT       5555
+#define   MESH_PREFIX     "XIAOMesh"
+#define   MESH_PASSWORD   "mesh12345"
+#define   MESH_PORT       5555
 
-painlessMesh mesh;
+Scheduler     userScheduler;
+painlessMesh  mesh;
 
-// Variablen
-char roomIndex = 5;  // Raumindex für das Mesh-Netzwerk, zwischen 0 und 15
-uint8_t slaveIndex = 0;  // Startindex für das Anpingen der Slaves (0 bis 255)
-unsigned long previousMillis = 0;  // Zeit-Tracking für den Ping
-const unsigned long interval = 1000;  // Ping-Intervall in Millisekunden (1 Sekunde)
+void sendOwnSignalStrength() {
+  int32_t rssi = WiFi.RSSI();
 
-// Funktionsprototypen
-String createMeshPrefix(char index);
-String createMasterName(char index);
-String createSlaveName(uint8_t index);
+  DynamicJsonDocument doc(256);
+  doc["nodeId"] = mesh.getNodeId();
+  doc["rssi"] = rssi;
 
-// Callback für empfangene Nachrichten
+  String msg;
+  serializeJson(doc, msg);
+
+  // Broadcast to all nodes
+  mesh.sendBroadcast(msg);
+  Serial.printf("Broadcasted RSSI: %s\n", msg.c_str());
+}
+
 void receivedCallback(uint32_t from, String &msg) {
-  Serial.printf("Message from %u: %s\n", from, msg.c_str());
+  DynamicJsonDocument doc(256);
+  DeserializationError err = deserializeJson(doc, msg);
+  if (err) {
+    Serial.printf("Error parsing JSON from %u: %s\n", from, err.c_str());
+    return;
+  }
+
+  uint32_t senderId = doc["nodeId"];
+  int32_t rssi = doc["rssi"];
+
+  Serial.printf("Received RSSI from node %u: %d dBm\n", senderId, rssi);
 }
 
-// Funktion zur Erstellung des dynamischen Netzwerknamens
-String createMeshPrefix(char index) {
-  return "Room_" + String((int)index);  // Index als Zahl von 0-15 an den Präfix anhängen
-}
+Task taskSendRSSI(TASK_SECOND * 10, TASK_FOREVER, &sendOwnSignalStrength);
 
-// Funktion zur Erstellung des Master-Namens
-String createMasterName(char index) {
-  return "Master_Room_" + String((int)index);  // Master-Name mit Raumnummer
-}
-
-// Funktion zur Erstellung des Slave-Namens
-String createSlaveName(uint8_t index) {
-  return "Slave_" + String((int)index);  // Slave-Name mit laufender Nummerierung
-}
-
-// Setup
 void setup() {
   Serial.begin(115200);
-  delay(500);
 
-  // Mesh-Netzwerkname
-  String meshPrefix = createMeshPrefix(roomIndex);
-  Serial.print("Networkname: ");
-  Serial.println(meshPrefix);
-
-  // Master-Name
-  String masterName = createMasterName(roomIndex);
-  Serial.print("Master-Name: ");
-  Serial.println(masterName);
-
-  mesh.setDebugMsgTypes(ERROR | MESH_STATUS | CONNECTION);
-  mesh.init(meshPrefix.c_str(), MESH_PASSWORD, &MESH_PORT);
+  mesh.setDebugMsgTypes(ERROR | STARTUP | CONNECTION);  // Optional
+  mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
   mesh.onReceive(&receivedCallback);
+
+  userScheduler.addTask(taskSendRSSI);
+  taskSendRSSI.enable();
 }
 
-// Loop
-void loop() {
-  mesh.update();
-
-  // Überprüfe das Intervall für den Ping
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;
-
-    // Nachricht an den aktuellen Slave senden
-    String slaveName = createSlaveName(slaveIndex);
-    Serial.printf("Pinging %s\n", slaveName.c_str());
-
-    mesh.sendBroadcast("Ping at " + slaveName);
-
-    // Index für den nächsten Slave erhöhen (0 bis 255)
-    slaveIndex = (slaveIndex + 1) % 256;
-  }
-}
-```
-
-#### Slave:
-```C++
-#include <painlessMesh.h>
-
-// Netzwerk-Parameter
-#define MESH_PASSWORD   "12345678"
-#define MESH_PORT       5555
-
-painlessMesh mesh;
-
-// Variablen
-char roomIndex = 5;  // Raumindex für das Mesh-Netzwerk, zwischen 0 und 15
-char slaveIndex = 3;  // Beispiel-Slave-Index, zwischen 0 und 255
-String meshPrefix;
-String slaveName;
-int counter = 0;  // Zähler für empfangene Nachrichten
-
-// Funktionsprototypen
-String createMeshPrefix(char index);
-String createSlaveName(char index);
-
-// Callback für empfangene Nachrichten
-void receivedCallback(uint32_t from, String &msg) {
-  Serial.printf("Message from %u: %s\n", from, msg.c_str());
-
-  // Prüfen, ob die Nachricht den Namen dieses Slaves enthält
-  if (msg.endsWith(slaveName)) {
-    counter++;  // Zähler inkrementieren
-    Serial.printf("Message for %s recieved. Counter: %d\n", slaveName.c_str(), counter);
-  }
-}
-
-// Funktion zur Erstellung des dynamischen Netzwerknamens
-String createMeshPrefix(char index) {
-  return "Room_" + String((int)index);  // Erzeugt den Mesh-Präfix wie "Room_5"
-}
-
-// Funktion zur Erstellung des Slave-Namens
-String createSlaveName(char index) {
-  return "Slave_" + String((int)index);  // Erzeugt den Slave-Namen wie "Slave_3"
-}
-
-// Setup
-void setup() {
-  Serial.begin(115200);
-  delay(500);
-
-  // Mesh-Netzwerkname und Slave-Name basierend auf den Indizes
-  meshPrefix = createMeshPrefix(roomIndex);
-  slaveName = createSlaveName(slaveIndex);
-
-  Serial.print("Networkname: ");
-  Serial.println(meshPrefix);
-  Serial.print("Slave-Name: ");
-  Serial.println(slaveName);
-
-  // Mesh-Initialisierung
-  mesh.setDebugMsgTypes(ERROR | MESH_STATUS | CONNECTION);
-  mesh.init(meshPrefix.c_str(), MESH_PASSWORD, &MESH_PORT);
-  mesh.onReceive(&receivedCallback);
-}
-
-// Loop
 void loop() {
   mesh.update();
 }
