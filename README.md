@@ -45,7 +45,7 @@ https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32
 ```
 4. Navigate to Tools > Board > Boards Manager
 5. Type the keyword esp32 in the search box, select the latest version of esp32, and install it.
-6. Select your board (XIAO_ESP32-S3) and the port.
+6. Select your board (XIAO_ESP32S3) and the port.
 
 Read more about it [here](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/#software-preparation).
 
