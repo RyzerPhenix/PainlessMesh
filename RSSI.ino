@@ -1,47 +1,54 @@
-#include "painlessMesh.h"
-#include <WiFi.h>
+#include <painlessMesh.h>
 
-#define MESH_PREFIX     "MyMeshNetwork"
-#define MESH_PASSWORD   "password123"
-#define MESH_PORT       5555
+#define   MESH_PREFIX     "XIAOMesh"
+#define   MESH_PASSWORD   "mesh12345"
+#define   MESH_PORT       5555
 
-Scheduler userScheduler;
-painlessMesh mesh;
+Scheduler     userScheduler;
+painlessMesh  mesh;
 
-unsigned long lastSentTime = 0;
-const unsigned long interval = 10000; // 10 Sekunden
+void sendOwnSignalStrength() {
+  int32_t rssi = WiFi.RSSI();
 
-void sendRSSI() {
-    SimpleList<uint32_t> nodes = mesh.getNodeList();
-    for (auto node : nodes) {
-        String msg = "REQ_RSSI"; // Anforderung zur Messung der Signalstärke
-        mesh.sendSingle(node, msg);
-    }
+  DynamicJsonDocument doc(256);
+  doc["nodeId"] = mesh.getNodeId();
+  doc["rssi"] = rssi;
+
+  String msg;
+  serializeJson(doc, msg);
+
+  // Broadcast to all nodes
+  mesh.sendBroadcast(msg);
+  Serial.printf("Broadcasted RSSI: %s\n", msg.c_str());
 }
 
 void receivedCallback(uint32_t from, String &msg) {
-    Serial.printf("Received from %u: %s\n", from, msg.c_str());
-    
-    if (msg == "REQ_RSSI") {
-        int8_t rssi = WiFi.RSSI(); // Signalstärke des aktuellen Netzwerks messen
-        String response = "RSSI: " + String(rssi) + " dB";
-        mesh.sendSingle(from, response);
-    }
+  DynamicJsonDocument doc(256);
+  DeserializationError err = deserializeJson(doc, msg);
+  if (err) {
+    Serial.printf("Error parsing JSON from %u: %s\n", from, err.c_str());
+    return;
+  }
+
+  uint32_t senderId = doc["nodeId"];
+  int32_t rssi = doc["rssi"];
+
+  Serial.printf("Received RSSI from node %u: %d dBm\n", senderId, rssi);
 }
 
+Task taskSendRSSI(TASK_SECOND * 10, TASK_FOREVER, &sendOwnSignalStrength);
+
 void setup() {
-    Serial.begin(115200);
-    WiFi.mode(WIFI_STA); // WLAN in den Station-Modus versetzen
-    
-    mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
-    mesh.onReceive(&receivedCallback);
+  Serial.begin(115200);
+
+  mesh.setDebugMsgTypes(ERROR | STARTUP | CONNECTION);  // Optional
+  mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
+  mesh.onReceive(&receivedCallback);
+
+  userScheduler.addTask(taskSendRSSI);
+  taskSendRSSI.enable();
 }
 
 void loop() {
-    mesh.update();
-    
-    if (millis() - lastSentTime >= interval) {
-        lastSentTime = millis();
-        sendRSSI();
-    }
+  mesh.update();
 }
