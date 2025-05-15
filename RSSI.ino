@@ -7,46 +7,53 @@
 Scheduler     userScheduler;
 painlessMesh  mesh;
 
-void sendOwnSignalStrength() {
+// === Create message with NodeID, ParentID, RSSI ===
+String createNodeMessage() {
+  uint32_t myId = mesh.getNodeId();
   int32_t rssi = WiFi.RSSI();
 
-  DynamicJsonDocument doc(256);
-  doc["nodeId"] = mesh.getNodeId();
-  doc["rssi"] = rssi;
-
-  String msg;
-  serializeJson(doc, msg);
-
-  // Broadcast to all nodes
-  mesh.sendBroadcast(msg);
-  Serial.printf("Broadcasted RSSI: %s\n", msg.c_str());
-}
-
-void receivedCallback(uint32_t from, String &msg) {
-  DynamicJsonDocument doc(256);
-  DeserializationError err = deserializeJson(doc, msg);
-  if (err) {
-    Serial.printf("Error parsing JSON from %u: %s\n", from, err.c_str());
-    return;
+  uint32_t parentId = 0;
+  auto nodeList = mesh.getNodeList(true);  // Include root if connected
+  if (!nodeList.empty()) {
+    parentId = *nodeList.begin();          // Use iterator to access first element
   }
 
-  uint32_t senderId = doc["nodeId"];
-  int32_t rssi = doc["rssi"];
-
-  Serial.printf("Received RSSI from node %u: %d dBm\n", senderId, rssi);
+  String message = "NodeID: " + String(myId) + " | ParentID: " + String(parentId) + " | RSSI: " + String(rssi) + "dBm";
+  return message;
 }
 
-Task taskSendRSSI(TASK_SECOND * 10, TASK_FOREVER, &sendOwnSignalStrength);
+// === Send info to all nodes ===
+void sendNodeInfo() {
+  String msg = createNodeMessage();
+  mesh.sendBroadcast(msg);
+  Serial.println("Sent: " + msg);
+}
+
+// === Print incoming messages ===
+void receivedCallback(uint32_t from, String &msg) {
+  Serial.printf("From %u: %s\n", from, msg.c_str());
+}
+
+// === Optional logging ===
+void newConnectionCallback(uint32_t nodeId) {
+  Serial.printf("🔌 New connection: %u\n", nodeId);
+}
+
+// === Periodic task ===
+Task taskSendInfo(TASK_SECOND * 10, TASK_FOREVER, &sendNodeInfo);
 
 void setup() {
   Serial.begin(115200);
+  delay(1000);
 
-  mesh.setDebugMsgTypes(ERROR | STARTUP | CONNECTION);  // Optional
+  mesh.setDebugMsgTypes(ERROR | STARTUP | CONNECTION);
   mesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
-  mesh.onReceive(&receivedCallback);
 
-  userScheduler.addTask(taskSendRSSI);
-  taskSendRSSI.enable();
+  mesh.onReceive(&receivedCallback);
+  mesh.onNewConnection(&newConnectionCallback);
+
+  userScheduler.addTask(taskSendInfo);
+  taskSendInfo.enable();
 }
 
 void loop() {
