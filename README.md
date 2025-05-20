@@ -183,3 +183,49 @@ void loop() {
   }
 }
 ```
+
+#### Keyword Check
+This example code checks all the recieved content for a keyword and returns a boolean.
+```cpp
+#include <painlessMesh.h>
+
+#define   MESH_PREFIX     "XIAOMesh"
+#define   MESH_PASSWORD   "mesh12345"
+#define   MESH_PORT       5555
+
+painlessMesh  mesh;
+
+const String keywordToCheck = "HELLO";  // Example keyword
+
+// === Check if a message contains the keyword ===
+bool messageHasKeyword(const String& msg, const String& keyword) {
+  return msg.indexOf(keyword) != -1;
+}
+
+// === Callback for received messages ===
+void receivedCallback(uint32_t from, String &msg) {
+  Serial.println("From " + String(from) + ": " + msg);
+
+  if (messageHasKeyword(msg, keywordToCheck)) {
+    Serial.println("Keyword FOUND: " + keywordToCheck);
+    // Do something when the keyword is found
+  } else {
+    Serial.println("Keyword NOT found.");
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  mesh.setDebugMsgTypes(ERROR | STARTUP | CONNECTION);
+  mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
+
+  mesh.onReceive(&receivedCallback);
+}
+
+void loop() {
+  mesh.update();
+}
+
+```
