@@ -127,7 +127,7 @@ void loop() {
 }
 ```
 
-#### 
+#### Chat Room
 This code enables the user to input text over the serial console and broadcast it to all nodes.
 ```cpp
 #include <painlessMesh.h>
