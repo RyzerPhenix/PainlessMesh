@@ -32,6 +32,9 @@ Source: https://www.fastcabling.com
 The microcontroller used is the Seeed Studio XIAO ESP32S3. This Microcontroller was chosen, because of its small formfactor, its two powerfull 32-bit Xtensa LX7 Cores running at up to 240MHz and its PSRAM. In comparison to other XIAO Boards, the ESP32S3 has a relatively big PSRAM with 8MB, this is important for mesh applications, since the size of the network is mostly limited by RAM capacity. Also it has 8MB of Flash storage onboard. The XIAO ESP32S3 has a USB type C port for programming and interfacing with the MCU, this is important for future proofness and compatability. For interfaces it has 1x UART, 1x I²C, 1x I²S, 1xSPI, 11x GPIO (all capable of PWM), 1 user programmable LED and 1 charge LED. It has an integrated LiPo battery charger circuit onboard, so a single cell LiPo can be hooked for simply battery powering the application. The battery charging current is 100mA. It consumes about 100mA when powered with 5V while operating with WiFi.
 [Seeed Studio XIAO ESP32-S3](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/)
 
+### Arduino Pinout Diagram
+![Arduino Pinout Diagram](https://sigmdel.ca/michel/ha/xiao/img/xiao_esp32c3_pinout_bottom.png)
+
 ## Software
 
 ### Libraries and Dependencies
